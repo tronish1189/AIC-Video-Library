@@ -1,0 +1,17 @@
+{
+  "name": "council-video-library",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "video.js": "^8.3.0"
+  },
+  "dependencies": {
+    "@yaireo/tagify": "^4.17.8"
+  }
+}
