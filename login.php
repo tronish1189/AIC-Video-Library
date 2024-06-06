@@ -41,7 +41,7 @@ if ($wasSuccessful) {
 }
 
 $your_var = getenv('AWS_SECRET_ACCESS_KEY');
-echo $your_car;
+echo $your_var;
 ?>
 
 <!DOCTYPE html>
