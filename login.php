@@ -39,6 +39,9 @@ if ($wasSuccessful) {
     header("Location: index.php");
 }
 }
+
+$your_var = getenv('AWS_SECRET_ACCESS_KEY');
+echo $your_car;
 ?>
 
 <!DOCTYPE html>
