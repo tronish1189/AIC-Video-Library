@@ -17,7 +17,7 @@ use Aws\DynamoDb\DynamoDbClient;
 
 
 $client = new DynamoDbClient([
-    'profile' => 'default',
+    // 'profile' => 'default',
     'region'  => 'us-east-2',
     'version' => 'latest'
 ]);
@@ -44,7 +44,7 @@ echo $response;
 
 //Create a S3Client
 $s3Client = new S3Client([
-    'profile' => 'default',
+    // 'profile' => 'default',
     'region' => 'us-east-1',
     'version' => '2006-03-01'
 ]);

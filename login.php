@@ -19,7 +19,7 @@ if (isset($_POST["submit"])) {
 if ($wasSuccessful) {
 
     $dynamoClient = new DynamoDbClient([
-        'profile' => Constants::$profile,
+        // 'profile' => Constants::$profile,
         'region'  => Constants::$region,
         'version' => Constants::$version
     ]);
@@ -39,9 +39,6 @@ if ($wasSuccessful) {
     header("Location: index.php");
 }
 }
-
-$your_var = getenv('AWS_SECRET_ACCESS_KEY');
-echo $your_var;
 ?>
 
 <!DOCTYPE html>

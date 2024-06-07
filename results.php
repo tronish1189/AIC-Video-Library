@@ -10,7 +10,7 @@ require_once 'inc/classes/Constants.php';
 $s3client = new Aws\S3\S3Client(['region' => Constants::$region, 'version' => Constants::$version]);
 
 $dynamoClient = new DynamoDbClient([
-    'profile' => Constants::$profile,
+    // 'profile' => Constants::$profile,
     'region'  => Constants::$region,
     'version' => Constants::$version
 ]);

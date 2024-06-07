@@ -11,7 +11,7 @@ Class DynamoDBWrapper{
     {
         $this->client = new DynamoDbClient([
             'region' => $region,
-            'profile' => $profile,
+            // 'profile' => $profile,
             'version' => 'latest'
         ]);
     }

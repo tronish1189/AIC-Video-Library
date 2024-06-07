@@ -7,7 +7,7 @@ include 'header.php';
 
 $userEmail = $_SESSION["userLoggedIn"];
 
-$dynamoDB = new DynamoDBWrapper(Constants::$region, Constants::$profile);
+$dynamoDB = new DynamoDBWrapper(Constants::$region, Constants::$version);
 $dynamoClient = $dynamoDB->getDynamoClient();
 
 $item = $dynamoDB->getItem($dynamoClient, 'videoLibraryUsers', 'emailID', $userEmail);

@@ -10,7 +10,7 @@ class Account
         $pw = hash("sha512", $pw);
 
         $dynamoClient = new DynamoDbClient([
-            'profile' => Constants::$profile,
+            // 'profile' => Constants::$profile,
             'region'  => Constants::$region,
             'version' => Constants::$version
         ]);
@@ -50,7 +50,7 @@ class Account
         $pw = hash("sha512", $pw);
 
         $dynamoClient = new DynamoDbClient([
-            'profile' => Constants::$profile,
+            // 'profile' => Constants::$profile,
             'region'  => Constants::$region,
             'version' => Constants::$version
         ]);

@@ -1,7 +1,7 @@
 <?php
 
 Class Constants{
-    public static $profile = 'default';
+    // public static $profile = 'default';
     public static $region = 'us-east-2';
     public static $version = 'latest';
     public static $bucketName = 'video-file-storage';

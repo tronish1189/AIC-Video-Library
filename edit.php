@@ -10,7 +10,7 @@ if($_GET['v'] == ''){
 
 echo __DIR__;
 
-$dynamoDB = new DynamoDBWrapper(Constants::$region, Constants::$profile);
+$dynamoDB = new DynamoDBWrapper(Constants::$region, Constants::$version);
 $dynamoClient = $dynamoDB->getDynamoClient();
 
 $s3 = new S3Wrapper(Constants::$region);
