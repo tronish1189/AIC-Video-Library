@@ -8,8 +8,6 @@ if($_GET['v'] == ''){
     header('Location: '. '/');
 }
 
-echo __DIR__;
-
 $dynamoDB = new DynamoDBWrapper(Constants::$region, Constants::$version);
 $dynamoClient = $dynamoDB->getDynamoClient();
 
@@ -18,6 +16,7 @@ $s3Client = $s3->getS3Client();
 
 // Get video ID from query string
 $videoID = $_GET['v'];
+echo "<script>const videoID = '$videoID';</script>";
 
 edit_submit();
 
@@ -32,9 +31,16 @@ $result = $dynamoClient->getItem(array(
 // Video vars
 $videoTitle = $result['Item']['title']['S'];
 $videoDescription = $result['Item']['description']['S'];
+
+if(array_key_exists("topics", $result['Item'])){
+$videoTopics = $result['Item']['topics']['SS'];
+}
+
+if(array_key_exists("locations", $result['Item'])){
+$videoLocations = $result['Item']['locations']['SS'];
+}
+
 $videoTags = $result['Item']['tags']['SS'];
-
-
 
 $cmd = $s3Client->getCommand('GetObject', [
     'Bucket' => Constants::$bucketName,
@@ -51,11 +57,13 @@ $title = 'Edit ' . $videoTitle . ' - American Immigration Council';
 
 function edit_submit(){
 if(isset($_POST['submit'])){
-    $dynamoDB = new DynamoDBWrapper(Constants::$region, Constants::$profile);
-$dynamoClient = $dynamoDB->getDynamoClient();
+    $dynamoDB = new DynamoDBWrapper(Constants::$region, Constants::$version);
+    $dynamoClient = $dynamoDB->getDynamoClient();
 
     $newVideoTitle = $_POST['title'];
     $newVideoDescription = $_POST['description'];
+    $newVideoTopics = array_column(json_decode($_POST['topics']), 'value');
+    $newVideoLocations = array_column(json_decode($_POST['locations']), 'value');
     $newVideoTags = array_column(json_decode($_POST['tags']), 'value');
 
     $videoID = $_GET['v'];
@@ -90,6 +98,30 @@ $dynamoClient = $dynamoDB->getDynamoClient();
             ),
                 'Action' => 'PUT'
         ],
+        'topics' => [
+            'Value' => array(
+            'SS' => $newVideoTopics,
+        ),
+            'Action' => 'PUT'
+    ],
+        'topicsLowercase' => [
+            'Value' => array(
+            'SS' => array_map('strtolower', $newVideoTopics)
+        ),
+            'Action' => 'PUT'
+    ],
+        'locations' => [
+            'Value' => array(
+            'SS' => $newVideoLocations,
+        ),
+            'Action' => 'PUT'
+    ],
+        'locationsLowercase' => [
+            'Value' => array(
+            'SS' => array_map('strtolower', $newVideoLocations)
+        ),
+            'Action' => 'PUT'
+    ],
             'tags' => [
                 'Value' => array(
                 'SS' => $newVideoTags,
@@ -126,6 +158,16 @@ include('header.php');
                 </div>
 
                 <div class="input-group">
+                    <label for="topics">Topics</label>
+                    <input type="text" name="topics" id="topics">
+                </div>
+
+                <div class="input-group">
+                    <label for="locations">Locations</label>
+                    <input type="text" name="locations" id="locations">
+                </div>
+
+                <div class="input-group">
                     <label for="tags">Tags</label>
                     <input type="text" name="tags" id="tags">
                 </div>
@@ -149,19 +191,137 @@ include('header.php');
 <footer></footer>
 
 <script>
-    var tagsfromDB = <?php echo json_encode($videoTags); ?>;
-    var tagsEl = document.querySelector("input[name='tags']");
-    var tagify = new Tagify(tagsEl);
-    tagify.addTags(tagsfromDB);
+<?php if(isset($videoTopics)){ ?>;
+var topicsfromDB = <?php echo json_encode($videoTopics); ?>;
+var topicsEl = document.querySelector("input[name='topics']");
+var tagify = new Tagify(topicsEl);
+tagify.addTags(topicsfromDB);
+<?php } ?>;
 
-    function myFunction() {
-  confirm("Are you sure you want to delete this video?");
-}
+<?php if(isset($videoLocations)){ ?>;
+var locationsfromDB = <?php echo json_encode($videolocations); ?>;
+var locationsEl = document.querySelector("input[name='locations']");
+var tagify = new Tagify(locationsEl);
+tagify.addTags(locationsfromDB);
+<?php } ?>
+
+
+var tagsfromDB = <?php echo json_encode($videoTags); ?>;
+var tagsEl = document.querySelector("input[name='tags']");
+var tagify = new Tagify(tagsEl);
+tagify.addTags(tagsfromDB);
+
+
+var inputLocationTags = document.querySelector('input[name="locations"]'),
+    // init Tagify script on the above inputs
+    tagifyLocationTags = new Tagify(inputLocationTags, {
+        whitelist:
+            ['Alabama','Alaska','American Samoa','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Federated States of Micronesia','Florida','Georgia','Guam','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Marshall Islands','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Northern Mariana Islands','Ohio','Oklahoma','Oregon','Palau','Pennsylvania','Puerto Rico','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virgin Island','Virginia','Washington','West Virginia','Wisconsin','Wyoming'
+],
+        maxTags: 10,
+        dropdown: {
+            maxItems: 20,           // <- mixumum allowed rendered suggestions
+            classname: 'tags-look', // <- custom classname for this dropdown, so it could be targeted
+            enabled: 0,             // <- show suggestions on focus
+            closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
+        }
+    })
+
+var inputTopicTags = document.querySelector('input[name="topics"]'),
+    // init Tagify script on the above inputs
+    tagifyTopicTags = new Tagify(inputTopicTags, {
+        whitelist: [
+  "Immigration 101",
+  "How Imm. System Works",
+  "History of Immigration",
+  "Demographics",
+  "Elections",
+  "Birthright Citizenship",
+  "Immigration and Crime",
+  "Immigration Reform",
+  "Executive Action",
+  "Legislation",
+  "Immigration at the Border",
+  "Abuses",
+  "Border Enforcement",
+  "Detention",
+  "Interior Enforcement",
+  "State and Local",
+  "Refugees + Asylum Seekers",
+  "Asylum",
+  "Refugee Status",
+  "Work Authorization",
+  "Waivers and Relief from Deportation",
+  "Economic Impact",
+  "Employment and Wages",
+  "Family-Based Immigration",
+  "Integration",
+  "State by State",
+  "Taxes & Spending Power",
+  "Undocumented Immigrants",
+  "The Legal System",
+  "Federal Courts/Jurisdiction",
+  "Immigration Courts",
+  "Right to Counsel",
+  "Civic Engagement",
+  "Civil Dialogue",
+  "Public Attitudes",
+  "Behavioral Science",
+  "Culture Change",
+  "Social Cohesion",
+  "Political Polarization",
+  "Bridge Building",
+  "Imm. Benefits and Relief",
+  "Adjustment of Status",
+  "Child Status Protection Act",
+  "DACA/DAPA",
+  "Temporary Protected Status",
+  "Business and the Workforce",
+  "Employment Based",
+  "Entrepreneurship/Innovation",
+  "High Skilled",
+  "Low Wage",
+  "Global Competitiveness",
+  "Industries",
+  "Healthcare",
+  "Hospitality & Tourism",
+  "Innovation & STEM Fields",
+  "International Students",
+  "Labor-Intensive Industries",
+  "Agriculture"
+],
+        maxTags: 10,
+        dropdown: {
+            maxItems: 20,           // <- mixumum allowed rendered suggestions
+            classname: 'tags-look', // <- custom classname for this dropdown, so it could be targeted
+            enabled: 0,             // <- show suggestions on focus
+            closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
+        }
+    })
+
 
 function myFunction() {
-  confirm("Are you sure you want to delete this video?");
-}
+    if(confirm("Are you sure you want to delete this video?") == true);{
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'ajaxHandler.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    alert('Video has been successfully deleted' + xhr.responseText);
+                    } else {
+                        alert('An error occurred while executing the PHP function.');
+                    }
+                }
+            };
+
+            var arg1 = encodeURIComponent(videoID);
+            var params = "videoID=" + arg1;
+            xhr.send(params);
+        };
+    }
+
+
 </script>
 </body>
 </html>
-

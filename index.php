@@ -4,13 +4,12 @@ use Aws\DynamoDb\DynamoDbClient;
 use Aws\S3\S3Client;
 
 require_once('inc/classes/Constants.php'); // Include Constants
+require_once('inc/classes/Functions.php');
 require 'vendor/autoload.php'; // Include the AWS SDK for PHP
 
 include 'header.php';
 
-// echo   $_SESSION["userLoggedIn"];
-// echo $_SESSION["userFirstName"];
-// echo  $_SESSION["userLastName"];
+$videosPerPage = 9;
 
 $s3client = new Aws\S3\S3Client(['region' => Constants::$region, 'version' => Constants::$version]);
 
@@ -21,12 +20,66 @@ $dynamoClient = new DynamoDbClient([
 ]);
 
 $iterator = $dynamoClient->scan(array(
-    'TableName' => 'councilVideos'
+    'TableName' => 'councilVideos',
+    'Limit' => $videosPerPage
 ));
 $items = $iterator['Items'];
+
+// Sort videos by recently uploaded
+usort($items, function ($a, $b) {
+    return $b['timestamp'] <=> $a['timestamp'];
+});
+
+$scanTags = $dynamoClient->scan(array(
+    'TableName' => 'councilVideos',
+    'ProjectionExpression' => 'tags'
+));
+
+$scanTopics = $dynamoClient->scan(array(
+    'TableName' => 'councilVideos',
+    'ProjectionExpression' => 'topics'
+));
+
+$popularContentArray = [];
+
+$tagsList = [];
+$tagsList = Functions::pushMetaToArray($scanTags, "tags", $tagsList);
+
+$counted = array_count_values($tagsList);
+arsort($counted); //sort descending maintain keys
+$most_frequent = key($counted); //get the key, as we are rewound it's the first key
+next($counted);
+$most_frequent2 = key($counted); //get the key, as we are rewound it's the first key
+next($counted);
+$most_frequent3 = key($counted); //get the key, as we are rewound it's the first key
+array_push($popularContentArray, $most_frequent);
+array_push($popularContentArray, $most_frequent2);
+array_push($popularContentArray, $most_frequent3);
+
+$topicsList = [];
+$topicsList = Functions::pushMetaToArray($scanTopics, "topics", $topicsList);
+
+$counted = array_count_values($topicsList);
+arsort($counted); //sort descending maintain keys
+$most_frequent = key($counted); //get the key, as we are rewound it's the first key
+next($counted);
+$most_frequent2 = key($counted); //get the key, as we are rewound it's the first key
+next($counted);
+$most_frequent3 = key($counted); //get the key, as we are rewound it's the first key
+
+array_push($popularContentArray, $most_frequent);
+array_push($popularContentArray, $most_frequent2);
+array_push($popularContentArray, $most_frequent3);
 ?>
 
 <div class="container">
+    <div class="search-buttons">
+    <?php
+    foreach($popularContentArray as $item){
+        echo "<a class='btn' href='./results.php?search_query=" . $item . "'>" . $item . "</a>";
+    }
+    ?>
+    </div>
     <h1 class="page-title">Recent Videos</h1>
     <div class="recentVideos">
 <?php
@@ -49,12 +102,28 @@ foreach ($items as $item) {
 
     echo '</a><a class="videoCard__title" href="./watch.php?v=' . $item['videoID']['S'] . '">' . $item['title']['S'] . '</a><span class="videoCard__tags">';
 
-    $tags = implode(', ', $item['tags']['SS']);
+    if(array_key_exists("tags", $item)){
+        $tags = implode(', ', $item['tags']['SS']);
+        echo $tags;
+    }
 
-    echo $tags;
+    echo "<span style='display:block'>" . Functions::timestampToString($item['timestamp']['S']) . "</span>";
 
     echo '</span></div>';
     }
+?>
+
+
+</div>
+<?php
+
+$numVideos = count($items);
+
+if($numVideos >= $videosPerPage){
+?>
+<a href="./videos.php">See all Videos</a>
+<?php
+}
 ?>
 </div>
 </div>

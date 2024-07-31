@@ -5,11 +5,33 @@
   --c-gray: #9c9da1;
   --c-light-gray: #e8eeee;
   --c-white: #ffffff;
+  --c-green: #ade25d;
 }
 
 * {
-  box-sizing: border-box;
-  font-family: "Source Sans 3", sans-serif;
+  font-family: "Karla", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.dm-serif-text-regular {
+  font-family: "DM Serif Text", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.dm-serif-text-regular-italic {
+  font-family: "DM Serif Text", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.karla-500 {
+  font-family: "Karla", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
 }
 
 /*Reset*/
@@ -26,6 +48,12 @@ ol,
 li {
   margin: 0;
   padding: 0;
+}
+
+h1 {
+  font-family: "DM Serif Text", serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 /*Utilities*/
@@ -65,16 +93,31 @@ li {
   display: inline-block;
   padding: 10px 8px;
   font-weight: bold;
-  font-family: "Open Sans";
+  font-family: "Karla", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
   font-size: 15px;
   border: none;
   cursor: pointer;
   width: 100%;
 }
 
+.btn {
+  background: #ade25d;
+  border-radius: 30px;
+  text-decoration: none;
+  padding: 1rem 2rem;
+  color: black;
+  display: inline-block;
+  transition: 250ms all;
+}
+
 body {
-  font-family: "Source Sans Pro", sans-serif;
-  margin: 0;
+  font-family: "Karla", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
 }
 
 .page-login {
@@ -174,13 +217,13 @@ input[type="password"]:focus-visible {
   border: none;
   cursor: pointer;
   padding: 0.5rem;
-  width: 64px;
+  width: 48px;
   display: inline-block;
   position: relative;
   background: var(--c-light-gray);
   left: -3px;
-  top: 6.7px;
-  height: 40.8px;
+  top: 8px;
+  height: 21.6px;
 }
 
 .searchbar__submit:hover {
@@ -214,6 +257,23 @@ input[type="password"]:focus-visible {
   padding-right: 1rem;
   max-width: 1400px;
   margin: 0 auto;
+}
+
+.search-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-block: 2rem;
+  font-size: 0.8rem;
+  letter-spacing: -0.5px;
+}
+
+.search-buttons > a {
+  background: var(--c-light-gray);
+  padding: 0.8rem 1rem;
+}
+
+.search-buttons > a:hover {
+  background: var(--c-gray);
 }
 
 /*Video Details Page*/
@@ -291,7 +351,7 @@ footer {
   margin-top: 2rem;
 }
 
-.recentVideos .videoCard {
+.videoCard {
   flex-basis: calc(33% - 2rem);
 }
 
@@ -306,7 +366,9 @@ footer {
   text-decoration: none;
   font-size: 1rem;
   color: black;
-  font-weight: 500;
+  font-family: "DM Serif Text", serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .videoCard__tags {
@@ -383,5 +445,6 @@ footer {
 }
 
 .tagify {
-  display: block;
+  display: flex;
+  padding: 8px 8px;
 }

@@ -1,11 +1,18 @@
 <?php
-use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
-use Guzzle\Http\Client;
 use Aws\DynamoDb\DynamoDbClient;
+use Aws\S3\S3Client;
 
-require 'vendor/autoload.php';
-require_once 'inc/classes/Constants.php';
+require_once('inc/classes/Constants.php'); // Include Constants
+require 'vendor/autoload.php'; // Include the AWS SDK for PHP
+
+include 'header.php';
+
+// echo   $_SESSION["userLoggedIn"];
+// echo $_SESSION["userFirstName"];
+// echo  $_SESSION["userLastName"];
+
+$videosPerPage = 21;
 
 $s3client = new Aws\S3\S3Client(['region' => Constants::$region, 'version' => Constants::$version]);
 
@@ -15,30 +22,19 @@ $dynamoClient = new DynamoDbClient([
     'version' => Constants::$version
 ]);
 
-$searchQuery =  strtolower($_GET['search_query']);
-
-$dynamoSearchQuery = $dynamoClient->scan(array(
+$iterator = $dynamoClient->scan(array(
     'TableName' => 'councilVideos',
-    'FilterExpression' => 'contains(tagsLowercase, :searchQuery) OR contains(titleLowercase, :searchQuery) OR contains(descriptionLowercase, :searchQuery) OR contains(topicsLowercase, :searchQuery)',
-    'ExpressionAttributeValues' => array(
-        ":searchQuery" => array('S' => $searchQuery) ,
-    )
+    'Limit' => $videosPerPage
 ));
-
-$searchItems = $dynamoSearchQuery['Items'];
-
-$title = "Search Results";
-include('header.php');
+$items = $iterator['Items'];
 ?>
 
-
-<div class="search-results-page">
-    <div class="container">
-<h1 style="margin-top:2rem">Search Results for "<?php echo $_GET['search_query']; ?>"</h1>
-    <div class="resultsPageVideos">
+<div class="container">
+    <h1 class="page-title">All Videos</h1>
+    <div class="recentVideos">
 <?php
+foreach ($items as $item) {
 
-foreach($searchItems as $item){
     echo '<div class="videoCard"><a href="./watch.php?v=' . $item['videoID']['S'] . '">';
 
     $cmd = $s3client->getCommand('GetObject', [
@@ -61,14 +57,18 @@ foreach($searchItems as $item){
     echo $tags;
 
     echo '</span></div>';
-}
-
+    }
 ?>
-    </div>
-</div>
-</div>
 
-<footer></footer>
+</div>
+<?php
 
-</body>
-</html>
+$numVideos = count($items);
+
+if($numVideos >= $videosPerPage){
+?>
+<a href="#">See all Videos</a>
+<?php
+}
+?>
+</div>

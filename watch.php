@@ -88,9 +88,9 @@ include('header.php');
         <div style="display:flex;align-items:center;justify-content:space-between;">
             <div>
             <h1 class="video__title"><?php echo $videoTitle; ?></h1>
-                <span class="video__uploadedBy">Upload on <?php echo $videoDate; ?></span>
-                <?php if($uploadedByName): ?>
-                <span class="video__uploadedBy"> | Upload By <?php echo $uploadedByName; ?></span>             <?php endif; ?></div>
+                <span class="video__uploadedBy">Uploaded on <?php echo $videoDate; ?> <?php if($uploadedByName): echo "&#183; Uploaded By " . $uploadedByName; endif; ?></span>
+
+            </div>
             <div class="video__actions">
                 <a href="edit.php?v=<?php echo $videoID; ?>">
                     <svg width="30px" height="30px" version="1.1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -109,11 +109,6 @@ include('header.php');
                         </g>
                     </svg>
                 </a>
-                <button class="copy-code">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="55.878" height="31.364" viewBox="0 0 55.878 31.364" fill="black">
-                      <path id="np_code_445309_000000" d="M38.785,25.937a1.948,1.948,0,0,0-1.807,1.442l-7.8,27.294a1.95,1.95,0,1,0,3.737,1.076l7.8-27.294a1.951,1.951,0,0,0-1.929-2.518ZM24.427,30.507a1.966,1.966,0,0,0-.853.284l-15.6,9.1a1.95,1.95,0,0,0,0,3.371l15.6,9.1a1.95,1.95,0,1,0,1.95-3.371L12.811,41.575l12.713-7.412a1.95,1.95,0,0,0-1.1-3.655Zm20.775,0a1.95,1.95,0,0,0-.833,3.655l12.713,7.412L44.37,48.987a1.95,1.95,0,1,0,1.95,3.371l15.6-9.1a1.95,1.95,0,0,0,0-3.371l-15.6-9.1a1.941,1.941,0,0,0-1.117-.284Z" transform="translate(-7.007 -25.936)"/>
-                    </svg>
-                </button>
             </div>
         </div>
         <p class="video__description"><?php echo $videoDescription; ?></p>

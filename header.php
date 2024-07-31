@@ -12,7 +12,6 @@ if(isset($_GET['search_query'])){
 } else {
     $search_placeholder = '';
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -29,11 +28,11 @@ if(isset($_GET['search_query'])){
          <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
 <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./styles.css?cache=1235623212weewqesdd34">
     <link rel="stylesheet" href="node_modules/video.js/dist/video-js.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Karla:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
 </head>
 <body>
 <header class="header">
@@ -49,7 +48,7 @@ if(isset($_GET['search_query'])){
 </button>
 </div>
 <div class="header__rightIcons">
-    <a href="./upload.php"><?php include('inc/icons/upload.php'); ?></a>
-    <a href="./account.php"><?php include('inc/icons/profile.php'); ?></a>
+    <a href="./upload.php" title="Upload video"><?php include('inc/icons/upload.php'); ?></a>
+    <a href="./account.php" title="Profile settings"><?php include('inc/icons/profile.php'); ?></a>
 </div>
 </header>

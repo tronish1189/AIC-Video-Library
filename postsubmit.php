@@ -19,11 +19,50 @@ $videoID = uniqid();
 $file_name = $videoID . '.mp4';
 $title = $_POST['title'];
 $description = $_POST['description'];
-
-$tags = array_column(json_decode($_POST['tags']), 'value');
-
 $timestamp = new DateTime();
 $timestamp = $timestamp->format('c');
+// $topics = '';
+// $tags = '';
+
+
+$videoMetaArray = array();
+$videoMetaArray = array(
+    'videoID'   => array('S' => $videoID),
+    'title' => [
+        'S' => $title,
+        ],
+    'titleLowercase' => [
+        'S' => strtolower($title),
+    ],
+    'description' => [
+        'S' => $description,
+    ],
+    'descriptionLowercase' => [
+        'S' => strtolower($description),
+    ],
+    'timestamp' => [
+        'S' => $timestamp,
+    ],
+    'uploaded_by' => [
+        'S' => $_SESSION['userFirstName'] . ' ' . $_SESSION['userLastName'],
+    ]
+);
+
+if($_POST['topics']){
+$topics = array_column(json_decode($_POST['topics']), 'value');
+$videoMetaArray["topics"]["SS"] = $topics;
+$videoMetaArray["topicsLowercase"]["SS"] = array_map('strtolower', $topics);
+}
+if($_POST['locations']){
+    $topics = array_column(json_decode($_POST['locations']), 'value');
+    $videoMetaArray["locations"]["SS"] = $topics;
+    $videoMetaArray["locations"]["SS"] = array_map('strtolower', $topics);
+}
+if($_POST['tags']){
+    $tags = array_column(json_decode($_POST['tags']), 'value');
+    $videoMetaArray["tags"]["SS"] = $tags;
+    $videoMetaArray["tagsLowercase"]["SS"] = array_map('strtolower', $tags);
+}
 
 $videoFile = $_FILES['file']['tmp_name'];
 
@@ -49,37 +88,13 @@ VideoProcessing::uploadThumbnailToS3($videoID, $videoThumbnailPath);
 
 $response = $dynamoClient->putItem(array(
     'TableName' => 'councilVideos',
-    'Item' => array(
-        'videoID'   => array('S' => $videoID),
-        'title' => [
-            'S' => $title,
-        ],
-        'titleLowercase' => [
-            'S' => strtolower($title),
-        ],
-        'description' => [
-            'S' => $description,
-        ],
-        'descriptionLowercase' => [
-            'S' => strtolower($description),
-        ],
-        'timestamp' => [
-            'S' => $timestamp,
-        ],
-        'uploaded_by' => [
-            'S' => $_SESSION['userFirstName'] . ' ' . $_SESSION['userLastName'],
-        ],
-        'tags' => [
-            'SS' => $tags
-        ],
-        'tagsLowercase' => [
-            'SS' => array_map('strtolower', $tags)
-        ]
-    )
+    'Item' => $videoMetaArray
 ));
 
 $title = "Video Uploaded Successfully";
 include 'header.php';
 ?>
 
-<p><?php echo $message; ?></p>
+<div class="container">
+    <p><?php echo $message; ?></p>
+</div>
