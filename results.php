@@ -19,7 +19,7 @@ $searchQuery =  strtolower($_GET['search_query']);
 
 $dynamoSearchQuery = $dynamoClient->scan(array(
     'TableName' => 'councilVideos',
-    'FilterExpression' => 'contains(tagsLowercase, :searchQuery) OR contains(titleLowercase, :searchQuery) OR contains(descriptionLowercase, :searchQuery) OR contains(topicsLowercase, :searchQuery)',
+    'FilterExpression' => 'contains(tagsLowercase, :searchQuery) OR contains(titleLowercase, :searchQuery) OR contains(descriptionLowercase, :searchQuery) OR contains(topicsLowercase, :searchQuery) OR contains(locationsLowercase, :searchQuery)',
     'ExpressionAttributeValues' => array(
         ":searchQuery" => array('S' => $searchQuery) ,
     )
@@ -54,13 +54,17 @@ foreach($searchItems as $item){
 
     echo '<img class="videoCard__thumbnail" src="' . $presignedUrl . '">';
 
-    echo '</a><a class="videoCard__title" href="./watch.php?v=' . $item['videoID']['S'] . '">' . $item['title']['S'] . '</a><span class="videoCard__tags">';
+    echo '</a><a class="videoCard__title" href="./watch.php?v=' . $item['videoID']['S'] . '">' . $item['title']['S'];
 
-    $tags = implode(', ', $item['tags']['SS']);
 
-    echo $tags;
+    if(array_key_exists("tags", $item)){
+        echo '</a><span class="videoCard__tags">';
+        $tags = implode(', ', $item['tags']['SS']);
+        echo $tags;
+        echo '</span>';
+    }
 
-    echo '</span></div>';
+    echo "</div>";
 }
 
 ?>

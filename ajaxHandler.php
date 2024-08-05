@@ -7,6 +7,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $myClass = new VideoActions();
     $result = $myClass->deleteVideo($arg1);
-
-    header("Location: index.php");
 }

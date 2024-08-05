@@ -18,9 +18,10 @@ Class VideoProcessing{
         exec($cmd, $outputLog, $returnCode);
 
         if ($returnCode != 0) {
+            echo $returnCode;
             //Command failed
             foreach ($outputLog as $line) {
-                echo $line . "<br>";
+                echo "Error: " . $line . "<br>";
             }
             return false;
         }

@@ -1,11 +1,12 @@
 <?php
 $title = "Video Upload - American Immigration Council";
 include('header.php');
+
 ?>
 <div class="container">
    <div class="videoUpload__wrapper">
        <h1 class="page-title">Upload Video</h1>
-       <form action="postsubmit.php" method="POST" enctype="multipart/form-data" id="videoUpload" name="videoUpload">
+       <form action="postsubmit.php" onsubmit="showLoadingModal()" method="POST" enctype="multipart/form-data" id="videoUpload" name="videoUpload">
        <div class="input-upload-file">
            <label for="file" class="custom-file-upload">
                File Upload
@@ -35,13 +36,22 @@ include('header.php');
                 </div>
 
                 <div class="aic-button__container">
-                   <input type="submit" value="Submit" class="aic-button aic-button--primary aic-button--large">
+                   <input type="submit" value="Submit" name="submit" class="aic-button aic-button--primary aic-button--large">
                 </div>
        </form>
    </div>
 </div>
 
+<div class="loading-modal">
+<img class="spin" src="./jeremy-head.jpg" />
+<p style="margin-top:2rem;">Video Uploading...<br><br> Please don't close this page until finished or JR will be very sad.</p>
+</div>
+
 <script>
+function showLoadingModal(){
+document.querySelector(".loading-modal").classList.add("show");
+}
+
 var tags = document.querySelector("input[name='tags']");
 new Tagify(tags);
 

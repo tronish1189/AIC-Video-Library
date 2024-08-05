@@ -28,7 +28,7 @@ if(isset($_GET['search_query'])){
          <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
 <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="./styles.css?cache=1235623212weewqesdd34">
+    <link rel="stylesheet" href="./styles.css?cache=1235623212weerwrwrasddewqesdd34">
     <link rel="stylesheet" href="node_modules/video.js/dist/video-js.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,6 +36,7 @@ if(isset($_GET['search_query'])){
 </head>
 <body>
 <header class="header">
+
     <a href="./"><img src="https://council-images.s3.us-east-2.amazonaws.com/brand-assets/logo-council.svg" class="header__logo" alt="American Immigration Council logo"></a>
 <div class="searchbar">
 <form action="results.php" method="GET">
@@ -51,4 +52,5 @@ if(isset($_GET['search_query'])){
     <a href="./upload.php" title="Upload video"><?php include('inc/icons/upload.php'); ?></a>
     <a href="./account.php" title="Profile settings"><?php include('inc/icons/profile.php'); ?></a>
 </div>
+
 </header>
