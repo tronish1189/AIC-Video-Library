@@ -142,3 +142,7 @@ var inputTopicTags = document.querySelector('input[name="topics"]'),
         }
     })
 </script>
+
+<?php
+phpinfo();
+?>
