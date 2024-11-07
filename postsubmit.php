@@ -72,15 +72,21 @@ $videoThumbnailPath = $videoThumbnailPath . $videoID . '-thumbnail.jpg';
 $message = '';
 
 try {
-    $s3client->putObject([
-        'Bucket' => Constants::$bucketName,
-        'Key' => $videoID . '/' . $file_name,
-        'Body' => fopen($videoFile, 'rb')
-    ]);
+    $s3client->upload(
+        Constants::$bucketName,
+        $videoID . '/' . $file_name,
+        fopen($videoFile, 'rb'),
+        'public-read'
+    );
+    // $s3client->putObject([
+    //     'Bucket' => Constants::$bucketName,
+    //     'Key' => $videoID . '/' . $file_name,
+    //     'Body' => fopen($videoFile, 'rb')
+    // ]);
     $message = "Uploaded successful. See your video <a href='watch.php?v=". $videoID . "'>here</a>";
 } catch (Exception $exception) {
     $message = "Failed to upload with error: " . $exception->getMessage();
-    exit("Please fix error with file upload before continuing.");
+    exit($message .$exception->getMessage() . " Please fix error with file upload before continuing.");
 }
 
 VideoProcessing::createVideoThumbnail($videoFile, $videoID);
