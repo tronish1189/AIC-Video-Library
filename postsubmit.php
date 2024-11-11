@@ -7,6 +7,8 @@ require 'vendor/autoload.php'; // Include the AWS SDK for PHP
 require_once('inc/classes/Constants.php'); // Include Constants
 require_once('inc/classes/VideoProcessing.php');
 
+phpinfo();
+
 $s3client = new Aws\S3\S3Client(['region' => Constants::$region, 'version' => Constants::$version]);
 
 $dynamoClient = new DynamoDbClient([
