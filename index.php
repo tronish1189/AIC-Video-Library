@@ -12,12 +12,23 @@ include 'header.php';
 
 $videosPerPage = 9;
 
-$s3client = new Aws\S3\S3Client(['region' => Constants::$region, 'version' => Constants::$version]);
+$s3client = new Aws\S3\S3Client([
+    'region' => Constants::$region,
+    'version' => Constants::$version,
+    'credentials' => [
+        'key' => Constants::$accessKey,
+        'secret' => Constants::$secretKey,
+    ],
+]);
 
 $dynamoClient = new DynamoDbClient([
     // 'profile' => Constants::$profile,
-    'region'  => Constants::$region,
-    'version' => Constants::$version
+    'region' => Constants::$region,
+    'version' => Constants::$version,
+    'credentials' => [
+        'key' => Constants::$accessKey,
+        'secret' => Constants::$secretKey,
+    ],
 ]);
 
 $iterator = $dynamoClient->scan(array(
@@ -72,25 +83,28 @@ array_push($popularContentArray, $most_frequent);
 array_push($popularContentArray, $most_frequent2);
 array_push($popularContentArray, $most_frequent3);
 
-function generateVideoCard($item, $client){
+function generateVideoCard($item, $client)
+{
     echo '<div class="videoCard"><a href="./watch.php?v=' . $item['videoID']['S'] . '">';
 
-    $cmd = $client->getCommand('GetObject', [
-        'Bucket' => Constants::$bucketName,
-        'Key' => $item['videoID']['S'] . '/' . $item['videoID']['S'] . '-thumbnail.jpg'
+    $cmd = $client->getCommand(
+        'GetObject',
+        [
+            'Bucket' => Constants::$bucketName,
+            'Key' => $item['videoID']['S'] . '/' . $item['videoID']['S'] . '-thumbnail.jpg'
         ]
     );
 
     $request = $client->createPresignedRequest($cmd, '+20 minutes');
 
     // Get the actual presigned-url
-    $presignedUrl = (string)$request->getUri();
+    $presignedUrl = (string) $request->getUri();
 
     echo '<img class="videoCard__thumbnail" src="' . $presignedUrl . '">';
 
     echo '</a><a class="videoCard__title" href="./watch.php?v=' . $item['videoID']['S'] . '">' . $item['title']['S'] . '</a><span class="videoCard__tags">';
 
-    if(array_key_exists("tags", $item)){
+    if (array_key_exists("tags", $item)) {
         $tags = implode(', ', $item['tags']['SS']);
         echo $tags;
     }
@@ -103,31 +117,31 @@ function generateVideoCard($item, $client){
 
 <div class="container">
     <div class="search-buttons">
-    <?php
-    foreach($popularContentArray as $item){
-        echo "<a class='btn' href='./results.php?search_query=" . $item . "'>" . $item . "</a>";
-    }
-    ?>
+        <?php
+        foreach ($popularContentArray as $item) {
+            echo "<a class='btn' href='./results.php?search_query=" . $item . "'>" . $item . "</a>";
+        }
+        ?>
     </div>
     <h1 class="page-title">Recent Videos</h1>
     <div class="recentVideos">
-<?php
-foreach ($items as $item) {
-    generateVideoCard($item, $s3client);
+        <?php
+        foreach ($items as $item) {
+            generateVideoCard($item, $s3client);
+        }
+        ?>
+
+
+    </div>
+    <?php
+
+    $numVideos = count($items);
+
+    if ($numVideos >= $videosPerPage) {
+        ?>
+        <a href="./videos.php">See all Videos</a>
+        <?php
     }
-?>
-
-
-</div>
-<?php
-
-$numVideos = count($items);
-
-if($numVideos >= $videosPerPage){
-?>
-<a href="./videos.php">See all Videos</a>
-<?php
-}
-?>
+    ?>
 </div>
 </div>

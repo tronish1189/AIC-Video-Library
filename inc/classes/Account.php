@@ -11,20 +11,24 @@ class Account
 
         $dynamoClient = new DynamoDbClient([
             // 'profile' => Constants::$profile,
-            'region'  => Constants::$region,
-            'version' => Constants::$version
+            'region' => Constants::$region,
+            'version' => Constants::$version,
+            'credentials' => [
+                'key' => Constants::$accessKey,
+                'secret' => Constants::$secretKey,
+            ],
         ]);
 
         $dynamoSearchQuery = $dynamoClient->scan(array(
             'TableName' => 'videoLibraryUsers',
             'FilterExpression' => 'emailID = :emailID AND password = :password',
             'ExpressionAttributeValues' => array(
-                ":emailID" => array('S' => $em) ,
-                ":password" => array('S' => $pw) ,
+                ":emailID" => array('S' => $em),
+                ":password" => array('S' => $pw),
             )
         ));
 
-        if(count($dynamoSearchQuery['Items']) > 0){
+        if (count($dynamoSearchQuery['Items']) > 0) {
             return true;
         } else {
             return false;
@@ -51,14 +55,18 @@ class Account
 
         $dynamoClient = new DynamoDbClient([
             // 'profile' => Constants::$profile,
-            'region'  => Constants::$region,
-            'version' => Constants::$version
+            'region' => Constants::$region,
+            'version' => Constants::$version,
+            'credentials' => [
+                'key' => Constants::$accessKey,
+                'secret' => Constants::$secretKey,
+            ],
         ]);
 
         $response = $dynamoClient->putItem(array(
             'TableName' => 'videoLibraryUsers',
             'Item' => array(
-                'emailID'   => array('S' => $em),
+                'emailID' => array('S' => $em),
                 'first_name' => [
                     'S' => $fn,
                 ],

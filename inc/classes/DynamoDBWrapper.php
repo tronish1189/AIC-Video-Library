@@ -4,15 +4,19 @@ use Aws\Exception\AwsException;
 
 include 'vendor/autoload.php';
 
-Class DynamoDBWrapper{
+class DynamoDBWrapper
+{
     private $client;
 
     public function __construct($region, $profile)
     {
         $this->client = new DynamoDbClient([
             'region' => $region,
-            // 'profile' => $profile,
-            'version' => 'latest'
+            'version' => 'latest',
+            'credentials' => [
+                'key' => Constants::$accessKey,
+                'secret' => Constants::$secretKey,
+            ],
         ]);
     }
 
@@ -26,8 +30,8 @@ Class DynamoDBWrapper{
         return $client->getItem(array(
             'ConsistentRead' => true,
             'TableName' => $tableName,
-            'Key'       => array(
-                $attributeName   => array('S' => $value),
+            'Key' => array(
+                $attributeName => array('S' => $value),
             )
         ));
     }
