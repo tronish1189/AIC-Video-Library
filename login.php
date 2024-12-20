@@ -67,11 +67,11 @@ if (isset($_POST["submit"])) {
                 <form action="login.php" method="POST">
                     <div class="input-group">
                         <label for="email">Email Address</label>
-                        <input type="text" name="email" id="email">
+                        <input type="text" name="email" id="email" required>
                     </div>
                     <div class="input-group">
                         <label for="password">Password</label>
-                        <input type="password" name="password" id="password">
+                        <input type="password" name="password" id="password" required>
                     </div>
                     <div class="aic-button__container">
                         <input type="submit" name="submit" value="Login"
