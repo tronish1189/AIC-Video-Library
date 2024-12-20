@@ -21,10 +21,10 @@ jobs:
             echo "Starting deployment to ${{ secrets.SSH_HOST }} with user ${{ secrets.SSH_USERNAME }}"
 
             # Navigate to the deployment path
-            cd ../var/www/html
+            cd ../var/www/html/ffmpeg
 
             # Pull the main branch (overwrite the existing files)
-            git clone https://github.com/tronish1189/AIC-Video-Library.git ffmpeg || cd ffmpeg && git pull origin main
+            git pull origin main
 
             # Install PHP dependencies (composer)
             composer install --no-interaction --prefer-dist
