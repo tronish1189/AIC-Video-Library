@@ -4,15 +4,17 @@ use Aws\S3\S3Client;
 require_once('inc/config.php'); // Include Constants
 require_once('inc/classes/Constants.php'); // Include Constants
 
-Class VideoProcessing{
-    static public function createVideoThumbnail($videoFile, $outputID){
+class VideoProcessing
+{
+    static public function createVideoThumbnail($videoFile, $outputID)
+    {
 
         $thumbnailSize = "450x253";
         $pathToThumbnail = "uploads/videos/thumbnails/" . $outputID . "-thumbnail.jpg";
 
         $baseDomain = $_SERVER['SERVER_NAME'];
 
-        if(str_contains($baseDomain, "localhost")){
+        if (str_contains($baseDomain, "localhost")) {
             $ffmpegPath = "ffmpeg/mac/regular-xampp/ffmpeg";
         } else {
             $ffmpegPath = "ffmpeg";
@@ -34,8 +36,16 @@ Class VideoProcessing{
         // $s3client = new Aws\S3\S3Client(['region' => Constants::$region, 'version' => Constants::$version]);
     }
 
-    static public function uploadThumbnailToS3($videoID, $file){
-        $s3client = new Aws\S3\S3Client(['region' => Constants::$region, 'version' => Constants::$version]);
+    static public function uploadThumbnailToS3($videoID, $file)
+    {
+        $s3client = new Aws\S3\S3Client([
+            'region' => Constants::$region,
+            'version' => Constants::$version,
+            'credentials' => [
+                'key' => Constants::$accessKey,
+                'secret' => Constants::$secretKey,
+            ],
+        ]);
         try {
             $s3client->putObject([
                 'Bucket' => Constants::$bucketName,

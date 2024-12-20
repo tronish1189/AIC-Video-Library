@@ -6,8 +6,10 @@ require_once('inc/classes/Constants.php'); // Include Constants
 require_once('inc/classes/DynamoDBWrapper.php');
 require_once('inc/classes/S3Wrapper.php');
 
-Class VideoActions{
-    static public function deleteVideo($videoID){
+class VideoActions
+{
+    static public function deleteVideo($videoID)
+    {
 
         $dynamoDB = new DynamoDBWrapper(Constants::$region, Constants::$version);
         $dynamoClient = $dynamoDB->getDynamoClient();
@@ -15,12 +17,19 @@ Class VideoActions{
         $result = $dynamoClient->deleteItem(array(
             'ConsistentRead' => true,
             'TableName' => 'councilVideos',
-            'Key'       => array(
-                'videoID'   => array('S' => $videoID),
+            'Key' => array(
+                'videoID' => array('S' => $videoID),
             )
         ));
 
-        $s3client = new Aws\S3\S3Client(['region' => Constants::$region, 'version' => Constants::$version]);
+        $s3client = new Aws\S3\S3Client([
+            'region' => Constants::$region,
+            'version' => Constants::$version,
+            'credentials' => [
+                'key' => Constants::$accessKey,
+                'secret' => Constants::$secretKey,
+            ],
+        ]);
 
         $objects = $s3client->listObjectsV2([
             'Bucket' => Constants::$bucketName,
@@ -42,8 +51,8 @@ Class VideoActions{
                         'Objects' => $keys,
                     ],
                 ]);
+            }
         }
-    }
 
         header("Location: index.php");
     }

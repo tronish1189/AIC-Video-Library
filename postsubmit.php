@@ -9,12 +9,23 @@ require_once('inc/classes/VideoProcessing.php');
 
 phpinfo();
 
-$s3client = new Aws\S3\S3Client(['region' => Constants::$region, 'version' => Constants::$version]);
+$s3client = new Aws\S3\S3Client([
+    'region' => Constants::$region,
+    'version' => Constants::$version,
+    'credentials' => [
+        'key' => Constants::$accessKey,
+        'secret' => Constants::$secretKey,
+    ],
+]);
 
 $dynamoClient = new DynamoDbClient([
     // 'profile' => Constants::$profile,
-    'region'  => Constants::$region,
-    'version' => Constants::$version
+    'region' => Constants::$region,
+    'version' => Constants::$version,
+    'credentials' => [
+        'key' => Constants::$accessKey,
+        'secret' => Constants::$secretKey,
+    ],
 ]);
 
 $videoID = uniqid();
@@ -29,10 +40,10 @@ $timestamp = $timestamp->format('c');
 
 $videoMetaArray = array();
 $videoMetaArray = array(
-    'videoID'   => array('S' => $videoID),
+    'videoID' => array('S' => $videoID),
     'title' => [
         'S' => $title,
-        ],
+    ],
     'titleLowercase' => [
         'S' => strtolower($title),
     ],
@@ -50,17 +61,17 @@ $videoMetaArray = array(
     ]
 );
 
-if($_POST['topics']){
-$topics = array_column(json_decode($_POST['topics']), 'value');
-$videoMetaArray["topics"]["SS"] = $topics;
-$videoMetaArray["topicsLowercase"]["SS"] = array_map('strtolower', $topics);
+if ($_POST['topics']) {
+    $topics = array_column(json_decode($_POST['topics']), 'value');
+    $videoMetaArray["topics"]["SS"] = $topics;
+    $videoMetaArray["topicsLowercase"]["SS"] = array_map('strtolower', $topics);
 }
-if($_POST['locations']){
+if ($_POST['locations']) {
     $topics = array_column(json_decode($_POST['locations']), 'value');
     $videoMetaArray["locations"]["SS"] = $topics;
     $videoMetaArray["locations"]["SS"] = array_map('strtolower', $topics);
 }
-if($_POST['tags']){
+if ($_POST['tags']) {
     $tags = array_column(json_decode($_POST['tags']), 'value');
     $videoMetaArray["tags"]["SS"] = $tags;
     $videoMetaArray["tagsLowercase"]["SS"] = array_map('strtolower', $tags);
@@ -85,10 +96,10 @@ try {
     //     'Key' => $videoID . '/' . $file_name,
     //     'Body' => fopen($videoFile, 'rb')
     // ]);
-    $message = "Uploaded successful. See your video <a href='watch.php?v=". $videoID . "'>here</a>";
+    $message = "Uploaded successful. See your video <a href='watch.php?v=" . $videoID . "'>here</a>";
 } catch (Exception $exception) {
     $message = "Failed to upload with error: " . $exception->getMessage();
-    exit($message .$exception->getMessage() . " Please fix error with file upload before continuing.");
+    exit($message . $exception->getMessage() . " Please fix error with file upload before continuing.");
 }
 
 VideoProcessing::createVideoThumbnail($videoFile, $videoID);
