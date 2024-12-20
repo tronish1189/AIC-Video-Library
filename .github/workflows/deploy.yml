@@ -18,7 +18,7 @@ jobs:
             echo "Starting deployment to ${{ secrets.SSH_HOST }} with user ${{ secrets.SSH_USERNAME }}"
 
             # Navigate to the deployment path
-            cd /var/www/html/ffmpeg
+            cd ../var/www/html/ffmpeg
 
             # Pull the main branch (overwrite the existing files)
             git pull origin main
