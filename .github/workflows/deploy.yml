@@ -14,14 +14,17 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }} # User of the server you want to ssh into
           password: ${{ secrets.SSH_PASSWORD }} # Password of the user for SSH login
           script: |
+            # Set COMPOSER_ALLOW_SUPERUSER to 1
+            export COMPOSER_ALLOW_SUPERUSER=1
+
             # Log that the deployment is starting
             echo "Starting deployment to ${{ secrets.SSH_HOST }} with user ${{ secrets.SSH_USERNAME }}"
 
             # Navigate to the deployment path
-            cd ../var/www/html/ffmpeg
+            cd ../var/www/html
 
             # Pull the main branch (overwrite the existing files)
-            git pull origin main
+            git clone https://github.com/tronish1189/AIC-Video-Library.git ffmpeg || cd ffmpeg && git pull origin main
 
             # Install PHP dependencies (composer)
             composer install --no-interaction --prefer-dist
