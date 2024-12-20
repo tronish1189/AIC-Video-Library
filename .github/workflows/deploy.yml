@@ -30,4 +30,4 @@ jobs:
             # Restart Apache service
             sudo systemctl restart apache2
 
-            echo 'Deployment successful to server'
+            echo 'Deployment successfully'
