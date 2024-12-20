@@ -15,6 +15,9 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }} # User of the server you want to ssh into
 
           script: |
+            # Log that the deployment is starting
+            echo "Starting deployment to ${{ secrets.SSH_HOST }} with user ${{ secrets.SSH_USERNAME }}"
+
             # Navigate to the deployment path
             cd /var/www/html/ffmpeg
 
