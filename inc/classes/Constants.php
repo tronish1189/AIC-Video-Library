@@ -1,9 +1,12 @@
 <?php
 
-Class Constants{
-    // public static $profile = 'default';
-    public static $region = 'us-east-2';
-    public static $version = 'latest';
+use Dotenv\Dotenv;
+include 'vendor/autoload.php';
+
+class Constants
+{
+    public static $region = 'region';
+    public static $version = 'version';
     public static $accessKey = 'accessKey';
     public static $secretKey = 'secretKey';
     public static $bucketName = 'video-file-storage';
@@ -18,4 +21,18 @@ Class Constants{
     public static $passwordNotAlphanumeric = "Your password can only contain letters and numbers.";
     public static $passwordLength = "Your password must be between 5 and 30 characters.";
     public static $loginFailed = "Your username or password isn't correct.";
+
+    public static function initialize()
+    {
+        // Load .env file
+        $dotenv = Dotenv::createImmutable(__DIR__ . "/../../"); // Adjust path to your .env location
+        $dotenv->load();
+
+        self::$region = $_ENV['AWS_REGION'];
+        self::$version = $_ENV['AWS_VERSION'];
+        self::$accessKey = $_ENV['AWS_ACCESS_KEY'];
+        self::$secretKey = $_ENV['AWS_SECRET_KEY'];
+    }
 }
+
+Constants::initialize();
