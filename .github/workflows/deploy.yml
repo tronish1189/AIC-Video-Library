@@ -18,8 +18,8 @@ jobs:
             # Navigate to the deployment path
             cd /var/www/html/ffmpeg
 
-            # Clone the repository (overwrite the existing files)
-            git clone https://github.com/tronish1189/AIC-Video-Library.git .
+            # Pull the main branch (overwrite the existing files)
+            git pull origin main
 
             # Install PHP dependencies (composer)
             composer install --no-interaction --prefer-dist
